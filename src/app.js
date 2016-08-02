@@ -17,6 +17,7 @@ function verifyRequestSignature(req, res, buf) {
 app.use(require('body-parser').json({ verify: verifyRequestSignature }));
 
 app.get('/webhook', function(req, res) {
+  console.log('get /webhook');
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === process.env.MESSENGER_VALIDATION_TOKEN) {
     res.status(200).send(req.query['hub.challenge']);
@@ -61,11 +62,13 @@ function callSendAPI(messageData) {
   });
 }
 app.post('/webhook', async function (req, res) {
+  console.log('post /webhook');
   var data = req.body;
   if (data.object == 'page') {
     for (const pageEntry of data.entry) {
       for (const messagingEvent of pageEntry.messaging) {
         if (messagingEvent.message) {
+          console.log(`${messagingEvent.sender.id}: ${messagingEvent.message.text}`);
           const { commandName, args } = parseMessageText(messagingEvent.message.text);
           const command = commands[commandName];
           const reply = {
@@ -91,6 +94,7 @@ app.post('/webhook', async function (req, res) {
               callSendAPI(messageData);
             }
           };
+          console.log(`${commandName}: ${args}`);
           if (!command) {
             reply.send(`unknown command "${commandName}"`);
             return;
