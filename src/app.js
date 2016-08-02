@@ -42,7 +42,7 @@ function parseMessageText(messageText) {
     return;
   }
   if (messageText[0] !== '/') {
-    return;
+    return { commandName: '/mxd-search', args: messageText };
   }
   const index = messageText.indexOf(' ');
   let commandName;
