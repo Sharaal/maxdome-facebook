@@ -47,10 +47,10 @@ function parseMessageText(messageText) {
   let commandName;
   let args;
   if (index !== -1) {
-    commandName = messageText.substring(1, index);
+    commandName = messageText.substring(0, index);
     args = messageText.substring(index + 1);
   } else {
-    commandName = messageText.substring(1);
+    commandName = messageText;
   }
   return { commandName, args };
 }
