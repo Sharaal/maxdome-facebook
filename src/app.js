@@ -55,33 +55,34 @@ function parseMessageText(messageText) {
   }
   return { commandName, args };
 }
-function callSendAPI(messageData) {
-  console.log(JSON.stringify({
-    url: `https://graph.facebook.com/v2.6/me/messages?access_token=${process.env.MESSENGER_PAGE_ACCESS_TOKEN}`,
-    json: true,
-    body: messageData
-  }));
-  request({
-    url: `https://graph.facebook.com/v2.6/me/messages?access_token=${process.env.MESSENGER_PAGE_ACCESS_TOKEN}`,
-    json: true,
-    body: messageData
-  }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
 
-      if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s",
-            messageId, recipientId);
+function callSendAPI(messageData) {
+  request(
+    {
+      uri: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: { access_token: process.env.MESSENGER_PAGE_ACCESS_TOKEN },
+      method: 'POST',
+      json: messageData
+    },
+    (error, response, body) => {
+      if (!error && response.statusCode == 200) {
+        var recipientId = body.recipient_id;
+        var messageId = body.message_id;
+
+        if (messageId) {
+          console.log("Successfully sent message with id %s to recipient %s",
+              messageId, recipientId);
+        } else {
+          console.log("Successfully called Send API for recipient %s",
+              recipientId);
+        }
       } else {
-        console.log("Successfully called Send API for recipient %s",
-            recipientId);
+        console.error(response.error);
       }
-    } else {
-      console.error(response.error);
     }
-  });
+  );
 }
+
 app.post('/webhook', async function (req, res) {
   console.log('post /webhook');
   var data = req.body;
