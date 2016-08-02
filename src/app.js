@@ -55,6 +55,11 @@ function parseMessageText(messageText) {
   return { commandName, args };
 }
 function callSendAPI(messageData) {
+  console.log(JSON.stringify({
+    url: `https://graph.facebook.com/v2.6/me/messages?access_token=${process.env.MESSENGER_PAGE_ACCESS_TOKEN}`,
+    json: true,
+    body: messageData
+  }));
   return rp.post({
     url: `https://graph.facebook.com/v2.6/me/messages?access_token=${process.env.MESSENGER_PAGE_ACCESS_TOKEN}`,
     json: true,
