@@ -16,6 +16,15 @@ function verifyRequestSignature(req, res, buf) {
 }
 app.use(require('body-parser').json({ verify: verifyRequestSignature }));
 
+app.get('/webhook', function(req, res) {
+  if (req.query['hub.mode'] === 'subscribe' &&
+      req.query['hub.verify_token'] === process.env.MESSENGER_VALIDATION_TOKEN) {
+    res.status(200).send(req.query['hub.challenge']);
+  } else {
+    res.sendStatus(403);
+  }
+});
+
 const heimdall = require('mxd-heimdall').heimdall({
   apikey: process.env.HEIMDALL_APIKEY,
   appid: process.env.HEIMDALL_APPID,
