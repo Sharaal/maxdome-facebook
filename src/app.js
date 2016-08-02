@@ -18,7 +18,6 @@ function verifyRequestSignature(req, res, buf) {
 app.use(require('body-parser').json({ verify: verifyRequestSignature }));
 
 app.get('/webhook', function(req, res) {
-  console.log('get /webhook');
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === process.env.MESSENGER_VALIDATION_TOKEN) {
     res.status(200).send(req.query['hub.challenge']);
@@ -57,40 +56,20 @@ function parseMessageText(messageText) {
 }
 
 function callSendAPI(messageData) {
-  request(
-    {
-      uri: 'https://graph.facebook.com/v2.6/me/messages',
-      qs: { access_token: process.env.MESSENGER_PAGE_ACCESS_TOKEN },
-      method: 'POST',
-      json: messageData
-    },
-    (error, response, body) => {
-      if (!error && response.statusCode == 200) {
-        var recipientId = body.recipient_id;
-        var messageId = body.message_id;
-
-        if (messageId) {
-          console.log("Successfully sent message with id %s to recipient %s",
-              messageId, recipientId);
-        } else {
-          console.log("Successfully called Send API for recipient %s",
-              recipientId);
-        }
-      } else {
-        console.error(response.error);
-      }
-    }
-  );
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: { access_token: process.env.MESSENGER_PAGE_ACCESS_TOKEN },
+    method: 'POST',
+    json: messageData
+  });
 }
 
 app.post('/webhook', async function (req, res) {
-  console.log('post /webhook');
   var data = req.body;
   if (data.object == 'page') {
     for (const pageEntry of data.entry) {
       for (const messagingEvent of pageEntry.messaging) {
         if (messagingEvent.message) {
-          console.log(`${messagingEvent.sender.id}: ${messagingEvent.message.text}`);
           const { commandName, args } = parseMessageText(messagingEvent.message.text);
           const command = commands[commandName];
           const reply = {
@@ -116,7 +95,6 @@ app.post('/webhook', async function (req, res) {
               callSendAPI(messageData);
             }
           };
-          console.log(`${commandName}: ${args}`);
           if (!command) {
             reply.send(`unknown command "${commandName}"`);
             return;
