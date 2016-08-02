@@ -35,21 +35,21 @@ const commands = {
   '/mxd-search': require('mxd-search-command')({ heimdall })
 };
 
-function parseMessage() {
-  if (message.length < 2) {
+function parseMessageText(messageText) {
+  if (messageText.length < 2) {
     return;
   }
-  if (message[0] !== '/') {
+  if (messageText[0] !== '/') {
     return;
   }
-  const index = message.indexOf(' ');
+  const index = messageText.indexOf(' ');
   let commandName;
   let args;
   if (index !== -1) {
-    commandName = message.substring(1, index);
-    args = message.substring(index + 1);
+    commandName = messageText.substring(1, index);
+    args = messageText.substring(index + 1);
   } else {
-    commandName = message.substring(1);
+    commandName = messageText.substring(1);
   }
   return { commandName, args };
 }
@@ -66,7 +66,7 @@ app.post('/webhook', async function (req, res) {
     for (const pageEntry of data.entry) {
       for (const messagingEvent of pageEntry.messaging) {
         if (messagingEvent.message) {
-          const { commandName, args } = parseMessage(messagingEvent.message.text);
+          const { commandName, args } = parseMessageText(messagingEvent.message.text);
           const command = commands[commandName];
           const reply = {
             link: (url, label) => {
