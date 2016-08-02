@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const request = require('request');
 
 const app = require('express')();
 function verifyRequestSignature(req, res, buf) {
@@ -60,10 +61,25 @@ function callSendAPI(messageData) {
     json: true,
     body: messageData
   }));
-  return rp.post({
+  request({
     url: `https://graph.facebook.com/v2.6/me/messages?access_token=${process.env.MESSENGER_PAGE_ACCESS_TOKEN}`,
     json: true,
     body: messageData
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      if (messageId) {
+        console.log("Successfully sent message with id %s to recipient %s",
+            messageId, recipientId);
+      } else {
+        console.log("Successfully called Send API for recipient %s",
+            recipientId);
+      }
+    } else {
+      console.error(response.error);
+    }
   });
 }
 app.post('/webhook', async function (req, res) {
