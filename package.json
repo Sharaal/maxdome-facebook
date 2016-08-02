@@ -1,0 +1,36 @@
+{
+  "name": "maxdome-facebook",
+  "description": "",
+  "version": "1.0.0",
+  "homepage": "http://github.com/dragonprojects/maxdome-facebook",
+  "license": "MIT",
+  "private": true,
+  "readmeFilename": "README.md",
+  "main": "dest/app.js",
+  "scripts": {
+    "postinstall": "npm run transpile",
+    "start": "dthrong",
+    "develop": "npm run transpile && node -r dotenv/config dest/app.js",
+    "transpile": "babel src -d dest"
+  },
+  "dependencies": {
+    "babel-cli": "^6.7.5",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-preset-es2015-node4": "^2.1.0",
+    "body-parser": "^1.15.2",
+    "dthrong": "^2.6.0",
+    "express": "^4.14.0",
+    "info-command": "^1.0.0",
+    "mxd-heimdall": "^1.0.0",
+    "mxd-search-command": "^1.0.0",
+    "request": "^2.74.0",
+    "request-promise": "^4.0.2"
+  },
+  "devDependencies": {
+    "dotenv": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dragonprojects/maxdome-facebook.git"
+  }
+}
