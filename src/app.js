@@ -37,9 +37,6 @@ const commands = {
 };
 
 function parseMessageText(messageText) {
-  if (messageText.length < 2) {
-    return;
-  }
   if (messageText[0] !== '/') {
     return { commandName: '/mxd-search', args: messageText };
   }
