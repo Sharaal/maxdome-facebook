@@ -26,14 +26,17 @@ app.get('/webhook', function(req, res) {
   }
 });
 
-const heimdall = require('mxd-heimdall').heimdall({
+const Heimdall = require('mxd-heimdall').Heimdall;
+const heimdall = new Heimdall({
   apikey: process.env.HEIMDALL_APIKEY,
-  appid: process.env.HEIMDALL_APPID,
-  pageSize: process.env.HEIMDALL_PAGESIZE || 3
+  appid: process.env.HEIMDALL_APPID
 });
 const commands = {
   '/mxd-info': require('info-command'),
-  '/mxd-search': require('mxd-search-command')({ heimdall })
+  '/mxd-search': require('mxd-search-command')({
+    heimdall: heimdall,
+    pageSize: process.env.HEIMDALL_PAGESIZE || 3
+  })
 };
 
 function parseMessageText(messageText) {
