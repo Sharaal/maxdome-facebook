@@ -26,14 +26,15 @@ app.get('/webhook', function(req, res) {
   }
 });
 
-const Heimdall = require('mxd-heimdall').Heimdall;
+const { AssetsQuery, Heimdall } = require('mxd-heimdall');
 const heimdall = new Heimdall({
   apikey: process.env.HEIMDALL_APIKEY,
   appid: process.env.HEIMDALL_APPID
 });
 const commands = {
-  '/mxd-info': require('info-command'),
-  '/mxd-search': require('mxd-search-command')({
+  '/mxd-info': require('info-command').commands.info,
+  '/mxd-search': require('mxd-search-command').commands['mxd-search']({
+    AssetsQuery: AssetsQuery,
     heimdall: heimdall,
     pageSize: process.env.HEIMDALL_PAGESIZE || 3
   })
@@ -102,7 +103,7 @@ app.post('/webhook', async function (req, res) {
           try {
             await command({ args: args, reply });
           } catch(e) {
-            reply.send(`error: "${e.message}"`);
+            reply.send(`error "${e.message}"`);
           }
         }
       }
