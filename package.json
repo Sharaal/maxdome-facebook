@@ -3,6 +3,15 @@
   "description": "",
   "version": "1.0.0",
   "homepage": "http://github.com/dragonprojects/maxdome-facebook",
+  "author": {
+    "name": "Sharaal",
+    "email": "developer@dragonprojects.de",
+    "url": "http://dragonprojects.de"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dragonprojects/maxdome-facebook.git"
+  },
   "license": "MIT",
   "private": true,
   "readmeFilename": "README.md",
@@ -27,9 +36,5 @@
   },
   "devDependencies": {
     "dotenv": "^2.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dragonprojects/maxdome-facebook.git"
   }
 }
